@@ -120,6 +120,26 @@ export default [
     ]
   },
   {
+    path: '/user',
+    name: 'user',
+    meta: {
+      icon: 'ios-albums',
+      title: '用户'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'user_admin',
+        name: 'user_admin',
+        meta: {
+          icon: 'ios-albums',
+          title: '用户管理'
+        },
+        component: () => import('@/view/user/user-admin.vue')
+      }
+    ]
+  },
+  {
     path: '/ocr',
     name: 'ocr',
     meta: {
@@ -294,26 +314,6 @@ export default [
   //         title: '路由器管理'
   //       },
   //       component: () => import('@/view/route/route-admin.vue')
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/user',
-  //   name: 'user',
-  //   meta: {
-  //     icon: 'ios-albums',
-  //     title: '用户'
-  //   },
-  //   component: Main,
-  //   children: [
-  //     {
-  //       path: 'user_admin',
-  //       name: 'user_admin',
-  //       meta: {
-  //         icon: 'ios-albums',
-  //         title: '用户管理'
-  //       },
-  //       component: () => import('@/view/user/user-admin.vue')
   //     }
   //   ]
   // },

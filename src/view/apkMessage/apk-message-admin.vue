@@ -43,11 +43,10 @@
 <script>
   import apkExpand from '../../components/table/apk-expand.vue'
   import super_table from '@/components/table/supertable.vue'
-  import {deleteAppPath, getAppPaths} from '../../api/appPath'
+  import {deleteAppPath, getAppPaths, createOrUpdateAppPath} from '../../api/appPath'
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
   import {setQueryConditions} from '../../libs/util.js'
   import {getAllApplicationShop} from "../../api/applicationShop";
-  import {createOrUpdateAppPath} from "../../api/appPath";
 
   export default {
     components: {
@@ -499,9 +498,9 @@
       },
       createOrUpdateAppPath(currentRow) {
         var that = this
-        this.currentAppPathData = currentRow
         // 更新操作
-        if (this.currentAppPathData.altKey === undefined) {
+        if (currentRow.altKey === undefined) {
+          this.currentAppPathData = currentRow
           getAllApkMessage({
             page: 0,
             count: 9999,
@@ -514,7 +513,7 @@
             that.appData = res.data.data.data
           })
         } else {
-          this.currentAppPathData = {}
+          this.currentAppPathData.id = 0
         }
         this.$Modal.confirm({
           title: '设置APP路径',
@@ -575,7 +574,7 @@
               h('Input', {
                 props: {
                   placeholder: '输入根路径配置',
-                  value: currentRow.rootPath,
+                  value: this.currentAppPathData.rootPath,
                   size: "large",
                   clearable: true,
                   type: "textarea",
@@ -591,7 +590,7 @@
               h('Input', {
                 props: {
                   placeholder: '输入子路径配置',
-                  value: currentRow.itemPath,
+                  value: this.currentAppPathData.itemPath,
                   size: "large",
                   clearable: true,
                   type: "textarea",

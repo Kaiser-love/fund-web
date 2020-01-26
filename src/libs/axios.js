@@ -55,13 +55,15 @@ class HttpRequest {
       if (!errorInfo) {
         const {request: {statusText, status}, config} = JSON.parse(JSON.stringify(error))
         errorInfo = {
+          data,
           statusText,
           status,
           request: {responseURL: config.url}
         }
       }
-      if (errorInfo.data.code !== 20015) {
-        console.log(errorInfo)
+      if (errorInfo.data.message !== undefined) {
+        printError(errorInfo.data.message)
+      } else {
         printError(error)
       }
       return Promise.reject(errorInfo)

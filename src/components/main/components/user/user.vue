@@ -25,7 +25,7 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
-import { changePsw } from '@/api/user'
+import { changePsw } from '../../../../api/user'
 import store from '@/store'
 export default {
   name: 'User',
