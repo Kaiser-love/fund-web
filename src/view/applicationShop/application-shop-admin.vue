@@ -1,11 +1,11 @@
 <template>
   <div class="container" ref="container">
-    <div class="top">
+    <div class="top" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="center" align="middle">
-            <Col span="22"><p>应用商店信息</p></Col>
-            <Col span="2">
+          <Row>
+            <Col style="float:left"><p>应用商店信息</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="applicationDataReload">刷新</Button>
             </Col>
           </Row>
@@ -21,9 +21,9 @@
     <div class="bottom" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="start" align="middle">
-            <Col span="22"><p>基金APP信息</p></Col>
-            <Col span="2">
+          <Row justify="start" align="middle">
+            <Col style="float:left"><p>基金APP信息</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="apkDataReload">刷新</Button>
             </Col>
           </Row>
@@ -42,7 +42,7 @@
 
 <script>
   import apkExpand from '../../components/table/apk-expand.vue'
-  import super_table from '@/components/table/supertable.vue'
+  import super_table from '../../components/table/supertable.vue'
   import {getAllApplicationShop, deleteApplicationShop} from '../../api/applicationShop'
   import {getAllApkMessage, deleteApkMessage} from '../../api/apkMessage'
   import {setQueryConditions} from '../../libs/util.js'
@@ -70,15 +70,14 @@
         applicationShopColumns: [
           {
             type: 'index',
-            width: 50,
             align: 'center',
+            width: '50',
             indexMethod: (row) => {
               return row._index + 1 + (this.currentApplicationShopPage - 1) * this.countPerPage
             }
           },
           {
             title: '创建者',
-            width: '220',
             render: (h, params) => {
               let createUser = params.row.createUserId
               if (params.row.createUserId === 0) {
@@ -90,35 +89,29 @@
           {
             title: '应用商店',
             key: 'shopName',
-            width: '200',
             filter: {
               type: 'Input'
             }
           },
           {
             title: '商店描述',
-            width: '350',
             key: 'shopDesc'
           },
           {
             title: '保存路径',
-            width: '400',
             key: 'path'
           },
           {
             title: '创建时间',
-            width: '190',
             key: 'createTime'
           },
           {
             title: '最近更新时间',
             key: 'updateTime',
-            width: '190'
           },
           {
             title: '操作',
             key: 'action',
-            width: '200',
             align: 'center',
             render: (h, params) => {
               let dzcListItem = [

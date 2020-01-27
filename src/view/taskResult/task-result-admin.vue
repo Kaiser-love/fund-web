@@ -3,9 +3,9 @@
     <div class="top" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="start" align="middle">
-            <Col span="22"><p>基金APP信息</p></Col>
-            <Col span="2">
+          <Row justify="start" align="middle">
+            <Col style="float:left"><p>基金APP信息</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="apkDataReload">刷新</Button>
             </Col>
           </Row>
@@ -19,9 +19,9 @@
     <div class="bottom">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="center" align="middle">
-            <Col span="22"><p>APP质检结果列表</p></Col>
-            <Col span="2">
+          <Row justify="center" align="middle">
+            <Col style="float:left"><p>APP质检结果列表</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="taskResultDataReload" style="margin-left: 10px">刷新</Button>
             </Col>
           </Row>
@@ -76,7 +76,6 @@
           },
           {
             title: '创建者',
-            width: '80',
             render: (h, params) => {
               let createUser = params.row.createUserId
               if (params.row.createUserId === 0) {
@@ -88,7 +87,6 @@
           {
             title: '应用商店',
             key: 'marketName',
-            width: '150',
             filter: {
               type: 'Input'
             }
@@ -96,7 +94,6 @@
           {
             title: '基金APP',
             key: 'apkName',
-            width: '150',
             filter: {
               type: 'Input'
             }
@@ -104,7 +101,6 @@
           {
             title: '违规类型',
             key: 'ruleTypeDesc',
-            width: '150',
             filter: {
               type: 'Input'
             }
@@ -112,7 +108,6 @@
           {
             title: '违规标签',
             key: 'ruleLabel',
-            width: '150',
             filter: {
               type: 'Input'
             }
@@ -120,22 +115,18 @@
           {
             title: '违规描述',
             key: 'taskResultDesc',
-            width: '195'
           },
           {
             title: '违规路径',
-            width: '450',
             key: 'violationRulePath'
           },
           {
             title: '创建时间',
-            width: '165',
             key: 'createTime'
           },
           {
             title: '最近更新时间',
             key: 'updateTime',
-            width: '165'
           },
           {
             title: '操作',

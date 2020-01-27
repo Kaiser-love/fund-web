@@ -43,7 +43,7 @@ export default [
     path: '/applicationShop',
     name: 'applicationShop',
     meta: {
-      icon: 'md-basket',
+      icon: 'ios-briefcase',
       title: '应用商店'
     },
     component: Main,
@@ -52,7 +52,7 @@ export default [
         path: 'application-shop-admin',
         name: 'application-shop-admin',
         meta: {
-          icon: 'ios-albums',
+          icon: 'ios-briefcase',
           title: '应用商店管理'
         },
         component: () => import('@/view/applicationShop/application-shop-admin.vue')
@@ -63,7 +63,7 @@ export default [
     path: '/apkMessage',
     name: 'apkMessage',
     meta: {
-      icon: 'md-basket',
+      icon: 'ios-appstore',
       title: 'APP管理'
     },
     component: Main,
@@ -72,7 +72,7 @@ export default [
         path: 'apk-message-admin',
         name: 'apk-message-admin',
         meta: {
-          icon: 'ios-albums',
+          icon: 'ios-appstore',
           title: '基金APP管理'
         },
         component: () => import('@/view/apkMessage/apk-message-admin.vue')
@@ -83,7 +83,7 @@ export default [
     path: '/cycylejob',
     name: 'cycylejob',
     meta: {
-      icon: 'ios-albums',
+      icon: 'ios-time',
       title: '定期任务'
     },
     component: Main,
@@ -92,7 +92,7 @@ export default [
         path: 'cycylejob_admin',
         name: 'cycylejob_admin',
         meta: {
-          icon: 'ios-albums',
+          icon: 'ios-time',
           title: '定期任务管理'
         },
         component: () => import('@/view/cycyleJob/cycyleJob-admin.vue')
@@ -103,7 +103,7 @@ export default [
     path: '/taskResult',
     name: 'taskResult',
     meta: {
-      icon: 'ios-albums',
+      icon: 'ios-clipboard',
       title: '定期任务结果'
     },
     component: Main,
@@ -112,7 +112,7 @@ export default [
         path: 'taskResult_admin',
         name: 'taskResult_admin',
         meta: {
-          icon: 'ios-albums',
+          icon: 'ios-clipboard',
           title: '质检结果管理'
         },
         component: () => import('@/view/taskResult/task-result-admin.vue')
@@ -123,7 +123,7 @@ export default [
     path: '/user',
     name: 'user',
     meta: {
-      icon: 'ios-albums',
+      icon: 'ios-man',
       title: '用户'
     },
     component: Main,
@@ -132,7 +132,7 @@ export default [
         path: 'user_admin',
         name: 'user_admin',
         meta: {
-          icon: 'ios-albums',
+          icon: 'ios-man',
           title: '用户管理'
         },
         component: () => import('@/view/user/user-admin.vue')
@@ -143,7 +143,7 @@ export default [
     path: '/ocr',
     name: 'ocr',
     meta: {
-      icon: 'md-basket',
+      icon: 'md-qr-scanner',
       title: '应用商店'
     },
     component: Main,
@@ -152,7 +152,7 @@ export default [
         path: 'ocr-admin',
         name: 'ocr-admin',
         meta: {
-          icon: 'ios-albums',
+          icon: 'md-qr-scanner',
           title: 'OCR测试'
         },
         component: () => import('@/view/ocr/ocr.vue')

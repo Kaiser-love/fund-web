@@ -3,9 +3,9 @@
        style="display: flex;flex-direction: column;flex-wrap: wrap;justify-content: flex-start; align-items: center;align-content: center;">
     <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
       <div slot="title">
-        <Row type="flex" justify="center" align="middle">
-          <Col span="22"><p>定时任务信息</p></Col>
-          <Col span="2">
+        <Row justify="center" align="middle">
+          <Col style="float:left"><p>定时任务信息</p></Col>
+          <Col style="float:right;display: inline;">
             <Button type="primary" @click="cycleJobReload">刷新</Button>
           </Col>
         </Row>
@@ -20,21 +20,31 @@
           <Col span="24"><p>添加定时任务</p></Col>
         </Row>
       </div>
-      <div style="display:flex; align-items:center;margin-top:10px;">
-        <span>应用商店定时任务：</span>
-        <Select style="margin-left:8px;width: 200px" v-model="taskTypeMode">
-          <Option v-for="(item) in taskTypes" :key="item.code" :value="item.code">{{item.desc}}</Option>
-        </Select>
-        <span style="margin-left:8px;">选择应用商店：</span>
-        <Select v-model="shopId" style="width: 300px" :transfer="true">
-          <Option v-for="(item) in applicationShopData" :key="item.id" :value="item.id">{{item.shopName}}</Option>
-        </Select>
-        <span style="margin-left:10px;">cron表达式：</span>
-        <Input v-model="taskCronExpr" placeholder="输入cron表达式" style="margin-left:8px;width: 300px">
-          <Button slot="append" @click="isTaskCronModalShow=true">选择时间</Button>
-        </Input>
-        <Button style="margin-left:10px;" type="primary" @click="onAddCycleJob">添加</Button>
-      </div>
+      <Row justify="center" align="middle">
+        <Col style="float:left">
+          <span>应用商店定时任务：</span>
+          <Select style="margin-left:8px;width: 200px" v-model="taskTypeMode">
+            <Option v-for="(item) in taskTypes" :key="item.code" :value="item.code">{{item.desc}}</Option>
+          </Select>
+        </Col>
+        <Col style="float:left;margin-left: 50px">
+          <span style="margin-left:8px;">选择应用商店：</span>
+          <Select v-model="shopId" style="width: 200px" :transfer="true">
+            <Option v-for="(item) in applicationShopData" :key="item.id" :value="item.id">{{item.shopName}}</Option>
+          </Select>
+        </Col>
+        <Col style="float:left;margin-left: 50px">
+          <span style="margin-left:8px;">cron表达式：</span>
+          <div style="display: inline-block;">
+            <Input v-model="taskCronExpr" placeholder="输入cron表达式" style="margin-left:8px;width: 200px">
+            </Input>
+            <Button slot="append" type="primary" @click="isTaskCronModalShow=true">选择时间</Button>
+          </div>
+        </Col>
+        <Col style="float:right">
+          <Button style="float:right" type="primary" @click="onAddCycleJob">添加</Button>
+        </Col>
+      </Row>
     </Card>
     <corn-selector ref="cornSel" :isModalShow="isCronModalShow" @onOk="onCron" @onIsShow="onIsShow"></corn-selector>
     <corn-selector ref="cornGoodSel" :isModalShow="isTaskCronModalShow" @onOk="onTaskCron"
@@ -50,7 +60,7 @@
     getCalShoptag
   } from '../../api/cycylejob'
   import {
-    createOrUpdate,
+    createOrUpdateCycleJob,
     deleteCycleJob,
     getCycleJobs,
   } from '../../api/task'
@@ -114,17 +124,14 @@
           {
             title: '运行实例',
             key: 'instance',
-            width: '160'
           },
           {
             title: '创建时间',
             key: 'createTime',
-            width: '160'
           },
           {
             title: '最近修改时间',
             key: 'updateTime',
-            width: '160'
           },
           {
             title: '是否运行中',
@@ -145,7 +152,7 @@
                     } else {
                       params.row.isUp = 0
                     }
-                    createOrUpdate(params.row).then(res => {
+                    createOrUpdateCycleJob(params.row).then(res => {
                       params.row.isUp = res.data.data.isUp
                       this.$Message.success("修改成功")
                     }).finally(this.isUpDisable = false)
@@ -163,7 +170,7 @@
           },
           {
             title: '状态',
-            key: 'status',
+            key: 'state',
             width: '100',
             render: (h, params) => {
               const row = params.row
@@ -177,11 +184,11 @@
                   'on-change': (val) => {
                     this.stateDisable = true
                     if (val) {
-                      params.row.state = 0
-                    } else {
                       params.row.state = 1
+                    } else {
+                      params.row.state = 0
                     }
-                    createOrUpdate(params.row).then(res => {
+                    createOrUpdateCycleJob(params.row).then(res => {
                       params.row.state = res.data.data.state
                       params.row.isUp = res.data.data.isUp
                       this.$Message.success("修改成功")
@@ -267,7 +274,7 @@
           this.$Message.error('请配置定时任务后在点击哦')
           return;
         }
-        createOrUpdate({
+        createOrUpdateCycleJob({
           "id": 0,
           "taskType": this.taskTypeMode,
           "appShopId": this.shopId,
@@ -410,7 +417,7 @@
         })
       },
       editOK() {
-        createOrUpdate(this.currentCycleJobData).then(res => {
+        createOrUpdateCycleJob(this.currentCycleJobData).then(res => {
           this.getCycleJobTableData({page: this.currentPage - 1, count: this.countPerPage})
           this.$Message.success("修改成功")
         })

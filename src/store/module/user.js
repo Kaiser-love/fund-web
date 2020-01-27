@@ -17,8 +17,8 @@ export default {
 
   },
   mutations: {
-    setAvator(state, avatorPath) {
-      state.avatorImgPath = avatorPath
+    setAvatarUrl(state, avatarUrl) {
+      state.avatarUrl = avatarUrl
     },
     setUserId(state, id) {
       state.userId = id
@@ -70,10 +70,10 @@ export default {
     messageTrashCount: state => state.messageTrashList.length,
     token: state => state.token,
     userName: state => state.userName,
+    userId: state => state.userId,
     access: state => state.access,
-    shopId: state => state.shopId,
-    isWar: state => state.isWar
-
+    isWar: state => state.isWar,
+    avatarUrl: state => state.avatarUrl
   },
   actions: {
     // 登录
@@ -90,6 +90,7 @@ export default {
             commit('setUserId', res.data.data.id)
             localStorage.setItem('user_id', res.data.data.id)
             commit('setUserName', res.data.data.name)
+            commit('setAvatarUrl', res.data.data.avatarUrl)
             resolve(res)
           }).catch(err => {
             reject(err)
@@ -131,7 +132,11 @@ export default {
     handleLogOut({state, commit}) {
       return new Promise((resolve, reject) => {
         commit('setToken', '')
+        commit('setAvatarUrl', '')
+        commit('setUserId', '')
+        commit('setUserName', '')
         commit('setAccess', [])
+        commit('setHasGetInfo', false)
         localStorage.setItem('user_id', 0)
         resolve()
       })
@@ -142,7 +147,10 @@ export default {
         try {
           getUserInfo(state.userId).then(res => {
             const data = res.data.data
+            commit('setUserId', data.id)
             commit('setUserName', data.userName)
+            commit('setAvatarUrl', data.avatarUrl)
+            commit('setHasGetInfo', data.userName !== undefined)
             resolve(res.data)
           }).catch(err => {
             console.log(err)

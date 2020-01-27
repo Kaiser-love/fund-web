@@ -1,14 +1,15 @@
 import axios from '@/libs/api.request'
 
-export const getAllLog = ({ page, count, queryId, queryString }) => {
+export const getAllLog = ({page = 0, count = 9999, conditions = [], conditionConnection = "and"}) => {
   return axios.request({
-    url: '/api/operationLogs/',
-    method: 'get',
-    params: {
-      query: queryId,
-      queryString: queryString,
+    url: '/fundApi/v1/operationLog/list',
+    method: 'post',
+    data: {
       page: page,
-      count: count
+      count: count,
+      orderBy: "create_time",
+      conditionConnection: conditionConnection,
+      conditions: conditions
     }
   })
 }

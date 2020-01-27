@@ -14,7 +14,7 @@ export const getCycleJobs = ({page, count, conditions = [], conditionConnection 
     }
   })
 }
-export const createOrUpdate = (data) => {
+export const createOrUpdateCycleJob = (data) => {
   return axios.request({
     url: '/cycleJobApi/v1/cycleJob/createOrUpdate',
     method: 'post',

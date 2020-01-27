@@ -3,9 +3,9 @@
     <div class="top">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="center" align="middle">
-            <Col span="22"><p>用户信息</p></Col>
-            <Col span="2">
+          <Row justify="center" align="middle">
+            <Col style="float:left"><p>用户信息</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="createOrUpdateUser">添加用户</Button>
               <Button type="primary" @click="userDataReload" style="margin-left: 10px">刷新</Button>
             </Col>
@@ -28,6 +28,8 @@
   import super_table from '@/components/table/supertable.vue'
   import {deleteUsers, getUsers, createOrUpdateUser} from '../../api/user'
   import {setQueryConditions} from '../../libs/util.js'
+  import store from '@/store'
+  import {mapActions} from "vuex";
 
   export default {
     components: {
@@ -35,6 +37,7 @@
     },
     data() {
       return {
+        stateDisable: false,
         userSearchState: 0,
         userSearchData: {},
         currentUserData: {},
@@ -54,13 +57,11 @@
           },
           {
             title: '创建者',
-            width: '150',
             key: "createUserName"
           },
           {
             title: '部门',
             key: 'department',
-            width: '202',
             filter: {
               type: 'Input'
             }
@@ -68,32 +69,81 @@
           {
             title: '姓名',
             key: 'realName',
-            width: '200'
           },
           {
             title: '用户名',
             key: 'userName',
-            width: '200'
           },
           {
             title: '邮箱',
             key: 'mail',
-            width: '200'
           },
           {
             title: '电话',
-            width: '200',
             key: 'phone'
           },
           {
             title: '创建时间',
-            width: '200',
             key: 'createTime'
           },
           {
             title: '最近更新时间',
             key: 'updateTime',
-            width: '200'
+          },
+          {
+            title: '状态',
+            key: 'state',
+            width: '100',
+            render: (h, params) => {
+              const row = params.row
+              return h('i-switch', {
+                props: {
+                  value: row.state === 1,
+                  size: 'large',
+                  disabled: this.stateDisable,
+                },
+                on: {
+                  'on-change': (val) => {
+                    let that = this
+                    this.stateDisable = true
+                    if (val) {
+                      row.state = 1
+                    } else {
+                      row.state = 0
+                    }
+                    if (row.id === store.getters.userId && row.state === 0) {
+                      this.$Modal.confirm({
+                        title: '警告',
+                        content: '该操作会导致当前账号无法登录,确定要禁用此用户吗?',
+                        onOk: function () {
+                          createOrUpdateUser(params.row).then(res => {
+                            row.state = res.data.data.state
+                            that.handleLogOut().then(() => {
+                              that.$router.push({
+                                name: 'login'
+                              })
+                            })
+                            this.$Message.success("修改成功")
+                          }).finally(this.stateDisable = false)
+                        }
+                      })
+                    } else {
+                      createOrUpdateUser(params.row).then(res => {
+                        row.state = res.data.data.state
+                        this.$Message.success("修改成功")
+                      }).finally(this.stateDisable = false)
+                    }
+                  }
+                }
+              }, [
+                h('span', {
+                  slot: 'open'
+                }, '启用'),
+                h('span', {
+                  slot: 'close'
+                }, '禁用')
+              ])
+            }
           },
           {
             title: '操作',
@@ -196,6 +246,9 @@
     },
     computed: {},
     methods: {
+      ...mapActions([
+        'handleLogOut'
+      ]),
       getUserData({page, count, conditions = []}) {
         var that = this
         that.isUserLoading = true
@@ -355,7 +408,14 @@
         })
       },
       editOK() {
+        let updateOwn = false
+        if (this.currentUserData.id === store.getters.userId) {
+          updateOwn = true
+        }
         createOrUpdateUser(this.currentUserData).then(res => {
+          if (updateOwn) {
+            store.dispatch('getUserInfo')
+          }
           this.getUserData({page: this.currentUserPage - 1, count: this.countPerPage})
           this.$message.success("操作成功")
         })

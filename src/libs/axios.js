@@ -61,6 +61,10 @@ class HttpRequest {
           request: {responseURL: config.url}
         }
       }
+      console.log(errorInfo.data.code)
+      if (errorInfo.data.code === -211056800) {
+        store.dispatch('handleLogOut')
+      }
       if (errorInfo.data.message !== undefined) {
         printError(errorInfo.data.message)
       } else {

@@ -29,6 +29,7 @@
     "simplemde": "^1.11.2",
     "sortablejs": "^1.7.0",
     "tree-table-vue": "^1.1.0",
+    "v-charts": "^1.19.0",
     "v-org-tree": "^1.0.6",
     "vue": "^2.5.10",
     "vue-context": "^3.4.2",

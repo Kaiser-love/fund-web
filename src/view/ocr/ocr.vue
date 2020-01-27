@@ -3,14 +3,14 @@
     <div style="display: flex;flex-direction: column;flex-wrap: wrap;justify-content: flex-start; ">
       <Card :bordered="false" v-bind:style="{ width: windowWidth + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="center" align="middle">
-            <Col span="22">
+          <Row>
+            <Col style="float:left">
               <Select v-model="ocrType" style="width:300px">
                 <Option v-for="item in ocrTypeList" :value="item.code" :key="item.code"> {{ item.desc }}
                 </Option>
               </Select>
             </Col>
-            <Col span="2">
+            <Col style="float:right;display: inline;">
               <el-button type="primary" :icon="isImgShow ? 'el-icon-circle-close' : 'el-icon-circle-check'"
                          size="small" style="margin-left: 50px"
                          @click="hidePhoto">{{isImgShow?"隐藏图片":"显示图片"}}

@@ -3,9 +3,9 @@
     <div class="top" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="start" align="middle">
-            <Col span="22"><p>基金APP信息</p></Col>
-            <Col span="2">
+          <Row>
+            <Col style="float:left"><p>基金APP信息</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="apkDataReload">刷新</Button>
             </Col>
           </Row>
@@ -19,9 +19,9 @@
     <div class="bottom">
       <Card :bordered="false" v-bind:style="{ width: windowWidth*0.98 + 'px' }">
         <div slot="title">
-          <Row type="flex" justify="center" align="middle">
-            <Col span="22"><p>APP路径配置信息</p></Col>
-            <Col span="2">
+          <Row>
+            <Col style="float:left"><p>APP路径配置信息</p></Col>
+            <Col style="float:right;display: inline;">
               <Button type="primary" @click="createOrUpdateAppPath">添加配置</Button>
               <Button type="primary" @click="appPathDataReload" style="margin-left: 10px">刷新</Button>
             </Col>
@@ -79,7 +79,6 @@
           },
           {
             title: '创建者',
-            width: '100',
             render: (h, params) => {
               let createUser = params.row.createUserId
               if (params.row.createUserId === 0) {
@@ -91,7 +90,6 @@
           {
             title: '应用商店',
             key: 'marketName',
-            width: '150',
             filter: {
               type: 'Input'
             }
@@ -99,7 +97,6 @@
           {
             title: '基金APP',
             key: 'apkName',
-            width: '150',
             filter: {
               type: 'Input'
             }
@@ -107,22 +104,18 @@
           {
             title: '根路径',
             key: 'rootPath',
-            width: '450'
           },
           {
             title: '子路径',
-            width: '450',
             key: 'itemPath'
           },
           {
             title: '创建时间',
-            width: '165',
             key: 'createTime'
           },
           {
             title: '最近更新时间',
             key: 'updateTime',
-            width: '165'
           },
           {
             title: '操作',
