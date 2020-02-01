@@ -47,6 +47,7 @@
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
   import {setQueryConditions} from '../../libs/util.js'
   import {getAllApplicationShop} from "../../api/applicationShop";
+  import {createOrUpdateCycleJob} from "../../api/task";
 
   export default {
     components: {
@@ -118,6 +119,64 @@
             key: 'updateTime',
           },
           {
+            title: '上次执行状态',
+            key: 'executeState',
+            width: '100',
+            render: (h, params) => {
+              const row = params.row
+              return h('i-switch', {
+                props: {
+                  value: row.executeState === 1,
+                  size: 'large',
+                  disabled: true
+                },
+              }, [
+                h('span', {
+                  slot: 'open'
+                }, '正常'),
+                h('span', {
+                  slot: 'close'
+                }, '异常')
+              ])
+            }
+          },
+          {
+            title: '状态',
+            key: 'state',
+            width: '100',
+            render: (h, params) => {
+              const row = params.row
+              return h('i-switch', {
+                props: {
+                  value: row.state === 1,
+                  size: 'large',
+                  disabled: this.stateDisable
+                },
+                on: {
+                  'on-change': (val) => {
+                    this.stateDisable = true
+                    if (val) {
+                      params.row.state = 1
+                    } else {
+                      params.row.state = 0
+                    }
+                    createOrUpdateAppPath(params.row).then(res => {
+                      params.row.state = res.data.data.state
+                      this.$Message.success("修改成功")
+                    }).finally(this.stateDisable = false)
+                  }
+                }
+              }, [
+                h('span', {
+                  slot: 'open'
+                }, '启用'),
+                h('span', {
+                  slot: 'close'
+                }, '禁用')
+              ])
+            }
+          },
+          {
             title: '操作',
             key: 'action',
             width: '100',
@@ -127,10 +186,17 @@
                 h('DropdownItem', {
                   nativeOn: {
                     click: (name) => {
-                      this.$Message.info('发送获取计量数据命令')
+                      this.$Modal.info({
+                        title: '异常日志',
+                        width: 850,
+                        okText: "关闭",
+                        scrollable: true,
+                        closable: true,
+                        content: `${params.row.exception}`
+                      })
                     }
                   }
-                }, '获取计量数据'),
+                }, '查看异常日志'),
                 h('DropdownItem', {
                   nativeOn: {
                     click: (name) => {
@@ -188,6 +254,7 @@
             }
           }
         ],
+        stateDisable: false,
         apkData: [],
         apkDataColumns: [
           {
