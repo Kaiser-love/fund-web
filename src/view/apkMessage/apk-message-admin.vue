@@ -45,7 +45,7 @@
   import super_table from '@/components/table/supertable.vue'
   import {deleteAppPath, getAppPaths, createOrUpdateAppPath} from '../../api/appPath'
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
-  import {setQueryConditions} from '../../libs/util.js'
+  import {setQueryConditions, downloadByBlob} from '../../libs/util.js'
   import {getAllApplicationShop} from "../../api/applicationShop";
   import {createOrUpdateCycleJob} from "../../api/task";
 
@@ -79,7 +79,17 @@
             }
           },
           {
+            title: "ID",
+            key: 'id',
+            width: 100,
+            align: 'center',
+            filter: {
+              type: 'Input'
+            }
+          },
+          {
             title: '创建者',
+            width: 75,
             render: (h, params) => {
               let createUser = params.row.createUserId
               if (params.row.createUserId === 0) {
@@ -105,10 +115,52 @@
           {
             title: '根路径',
             key: 'rootPath',
+            width: 150,
+            render: (h, params) => {
+              return h('div', [
+                h('span', {
+                  style: {
+                    display: 'inline-block',
+                    width: '95%',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  },
+                  domProps: {
+                    title: params.row.rootPath
+                  },
+                  on: {
+                    click: (e) => {
+                      e.stopPropagation();
+                    }
+                  }
+                }, params.row.rootPath)]);
+            }
           },
           {
             title: '子路径',
-            key: 'itemPath'
+            key: 'itemPath',
+            width: 150,
+            render: (h, params) => {
+              return h('div', [
+                h('span', {
+                  style: {
+                    display: 'inline-block',
+                    width: '95%',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  },
+                  domProps: {
+                    title: params.row.itemPath
+                  },
+                  on: {
+                    click: (e) => {
+                      e.stopPropagation();
+                    }
+                  }
+                }, params.row.itemPath)]);
+            }
           },
           {
             title: '创建时间',
@@ -121,7 +173,10 @@
           {
             title: '上次执行状态',
             key: 'executeState',
-            width: '100',
+            filter: {
+              type: 'Input'
+            },
+            width: '140',
             render: (h, params) => {
               const row = params.row
               return h('i-switch', {
@@ -143,7 +198,10 @@
           {
             title: '状态',
             key: 'state',
-            width: '100',
+            filter: {
+              type: 'Input'
+            },
+            width: '140',
             render: (h, params) => {
               const row = params.row
               return h('i-switch', {
@@ -187,6 +245,34 @@
                   nativeOn: {
                     click: (name) => {
                       this.$Modal.info({
+                        title: '根路径配置',
+                        width: 850,
+                        okText: "关闭",
+                        scrollable: true,
+                        closable: true,
+                        content: `${params.row.rootPath}`
+                      })
+                    }
+                  }
+                }, '查看根路径配置'),
+                h('DropdownItem', {
+                  nativeOn: {
+                    click: (name) => {
+                      this.$Modal.info({
+                        title: '子路径配置',
+                        width: 850,
+                        okText: "关闭",
+                        scrollable: true,
+                        closable: true,
+                        content: `${params.row.itemPath.split("\n").join("<br>")}`
+                      })
+                    }
+                  }
+                }, '查看子路径配置'),
+                h('DropdownItem', {
+                  nativeOn: {
+                    click: (name) => {
+                      this.$Modal.info({
                         title: '异常日志',
                         width: 850,
                         okText: "关闭",
@@ -197,20 +283,6 @@
                     }
                   }
                 }, '查看异常日志'),
-                h('DropdownItem', {
-                  nativeOn: {
-                    click: (name) => {
-                      this.$Message.info('发送获取电子秤电量命令')
-                    }
-                  }
-                }, '获取电子秤电量'),
-                h('DropdownItem', {
-                  nativeOn: {
-                    click: (name) => {
-                      this.$Message.info('发送清空计量数据命令')
-                    }
-                  }
-                }, '清空计量数据')
               ]
               return h('div', [
                 h('Dropdown', {
@@ -269,6 +341,35 @@
             }
           },
           {
+            title: '图标',
+            key: 'iconUrl',
+            render: (h, params) => {
+              return h('div', [
+                h('span', {
+                  style: {
+                    display: 'inline-block',
+                    width: '30px',
+                    height: '30px',
+                    background: 'url(' + params.row.iconUrl + ')',
+                    backgroundSize: '100% 100%',
+                    borderRadius: '15px',
+                  },
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({
+                        title: '提示',
+                        content: '确定要下载此Apk图标吗?',
+                        onOk: function () {
+                          downloadByBlob(params.row.iconUrl, params.row.apkName + "图标.png");
+                        }
+                      })
+                    }
+                  }
+                }, '')
+              ]);
+            }
+          },
+          {
             title: '应用商店',
             key: 'marketName',
             filter: {
@@ -282,7 +383,6 @@
               type: 'Input'
             }
           },
-
           {
             title: 'appActivity',
             key: 'appActivity'

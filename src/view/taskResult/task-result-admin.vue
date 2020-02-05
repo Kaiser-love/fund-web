@@ -43,7 +43,7 @@
   import super_table from '@/components/table/supertable.vue'
   import {deleteTaskResult, getTaskResults} from '../../api/taskResult'
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
-  import {setQueryConditions} from '../../libs/util.js'
+  import {setQueryConditions, downloadByBlob} from '../../libs/util.js'
 
   export default {
     components: {
@@ -213,6 +213,35 @@
             }
           },
           {
+            title: '图标',
+            key: 'iconUrl',
+            render: (h, params) => {
+              return h('div', [
+                h('span', {
+                  style: {
+                    display: 'inline-block',
+                    width: '30px',
+                    height: '30px',
+                    background: 'url(' + params.row.iconUrl + ')',
+                    backgroundSize: '100% 100%',
+                    borderRadius: '15px',
+                  },
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({
+                        title: '提示',
+                        content: '确定要下载此Apk图标吗?',
+                        onOk: function () {
+                          downloadByBlob(params.row.iconUrl, params.row.apkName + "图标.png");
+                        }
+                      })
+                    }
+                  }
+                }, '')
+              ]);
+            }
+          },
+          {
             title: '应用商店',
             key: 'marketName',
             filter: {
@@ -226,7 +255,6 @@
               type: 'Input'
             }
           },
-
           {
             title: 'appActivity',
             key: 'appActivity'

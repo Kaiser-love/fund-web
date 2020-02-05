@@ -21,7 +21,7 @@
         </Col>
         <Col span="16" style="margin-top: 6px">
           <span style="margin-left:4px" class="expand-key">图标Url： </span>
-          <span class="expand-value"><a :href="row.iconUrl" target="_blank">下载APK图标</a></span>
+          <span class="expand-value"><a :href="row.iconUrl" target="_blank">查看APK图标</a></span>
         </Col>
         <Col span="8" style="margin-top: 6px">
           <span style="margin-left:4px" class="expand-key">Apk下载Url： </span>

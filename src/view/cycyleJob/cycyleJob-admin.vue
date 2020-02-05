@@ -134,9 +134,12 @@
             key: 'updateTime',
           },
           {
-            title: '是否运行中',
+            title: '运行状态',
             key: 'isUp',
-            width: '100',
+            filter: {
+              type: 'Input'
+            },
+            width: '120',
             render: (h, params) => {
               return h('i-switch', {
                 props: {
@@ -171,7 +174,10 @@
           {
             title: '状态',
             key: 'state',
-            width: '100',
+            filter: {
+              type: 'Input'
+            },
+            width: '120',
             render: (h, params) => {
               const row = params.row
               return h('i-switch', {
