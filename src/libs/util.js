@@ -419,14 +419,53 @@ export const setTitle = (routeItem, vm) => {
  * @param {Array} keys 条件keys值
  * @param {Object} search 条件
  * @param {Array} conditions 条件
+ * @param {Boolean} open 是否开启对label的特殊处理
  */
-export const setQueryConditions = (keys, search, conditions) => {
+export const setQueryConditions = (keys, search, conditions, open = true) => {
   keys.forEach(key => {
-    conditions.push({
-      "query": key,
-      "connection": "like",
-      "queryString": search[key]
-    });
+    if (key === 'createUserName') {
+      conditions.push({
+        "query": 'createUserId-userName',
+        "connection": "in",
+        "queryString": search[key]
+      });
+    } else if (key === 'label' && open) {
+      conditions.push({
+        "query": 'violationItemId-label',
+        "connection": "in",
+        "queryString": search[key]
+      });
+    } else if (key === 'ruleTypeDesc') {
+      conditions.push({
+        "query": 'ruleType-byEnum',
+        "connection": "in",
+        "queryString": search[key]
+      });
+    } else if (key === 'andTypeDesc') {
+      conditions.push({
+        "query": 'andType-byEnum',
+        "connection": "in",
+        "queryString": search[key]
+      });
+    } else if (key === 'judgeTypeDesc') {
+      conditions.push({
+        "query": 'judgeType-byEnum',
+        "connection": "in",
+        "queryString": search[key]
+      });
+    } else if (key === 'ocrTypeDesc') {
+      conditions.push({
+        "query": 'ocrType-byEnum',
+        "connection": "in",
+        "queryString": search[key]
+      });
+    } else {
+      conditions.push({
+        "query": key,
+        "connection": "like",
+        "queryString": search[key]
+      });
+    }
   })
 };
 /**
@@ -456,4 +495,3 @@ export const downloadByBlob = (url, name) => {
     })
   }
 };
-

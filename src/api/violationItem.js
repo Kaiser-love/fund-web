@@ -1,8 +1,8 @@
 import axios from '@/libs/api.request'
 
-export const getAllApkMessage = ({page = 0, count = 9999, conditions = [], conditionConnection = null}) => {
+export const getAllViolationItem = ({page = 0, count = 9999, conditions = [], conditionConnection = null}) => {
   return axios.request({
-    url: '/fundApi/v1/apkMessage/list',
+    url: '/fundApi/v1/violationItem/list',
     method: 'post',
     data: {
       page: page,
@@ -13,17 +13,16 @@ export const getAllApkMessage = ({page = 0, count = 9999, conditions = [], condi
     }
   })
 }
-export const deleteApkMessage = (id) => {
+export const deleteViolationItem = (id) => {
   return axios.request({
-    url: '/fundApi/v1/apkMessage/delete/' + id,
+    url: '/fundApi/v1/violationItem/delete/' + id,
     method: 'delete'
   })
 }
-export const createOrUpdateApkMessage = (data) => {
+export const createOrUpdateViolationItem = (data) => {
   return axios.request({
-    url: '/fundApi/v1/apkMessage/createOrUpdate',
+    url: '/fundApi/v1/violationItem/createOrUpdate',
     method: 'post',
     data: data
   })
 }
-

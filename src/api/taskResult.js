@@ -1,6 +1,6 @@
 import axios from '../libs/api.request'
 
-export const getTaskResults = ({page, count, conditions = [], conditionConnection = "and"}) => {
+export const getTaskResults = ({page, count, conditions = [], conditionConnection = null}) => {
   return axios.request({
     url: '/fundApi/v1/taskResult/list',
     method: 'post',

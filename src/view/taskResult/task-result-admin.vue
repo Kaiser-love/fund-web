@@ -76,12 +76,9 @@
           },
           {
             title: '创建者',
-            render: (h, params) => {
-              let createUser = params.row.createUserId
-              if (params.row.createUserId === 0) {
-                createUser = '系统'
-              }
-              return h('p', createUser)
+            key: "createUserName",
+            filter: {
+              type: 'Input'
             }
           },
           {
@@ -107,7 +104,7 @@
           },
           {
             title: '违规标签',
-            key: 'ruleLabel',
+            key: 'label',
             filter: {
               type: 'Input'
             }
@@ -345,7 +342,9 @@
         currentTaskResultPage: 1,
         currentApkPage: 1,
         apkConditions: [],
-        taskResultConditions: []
+        taskResultConditions: [],
+        hasClickUp: false,
+        hasClickUpConditions: []
       }
     },
     mounted() {
@@ -371,10 +370,16 @@
     },
     watch: {
       currentTaskResultPage() {
-        this.getTaskResultData({
-          page: this.currentTaskResultPage - 1,
-          count: this.countPerPage
-        })
+        if (this.hasClickUp) {
+          this.isTaskResultLoading = true
+          let getHashClickUpDataCondition = this.hasClickUpConditions.concat(this.taskResultConditions)
+          this.getHasClickUpData(getHashClickUpDataCondition)
+        } else {
+          this.getTaskResultData({
+            page: this.currentTaskResultPage - 1,
+            count: this.countPerPage
+          })
+        }
       },
       currentApkPage() {
         this.getApkMessageData({
@@ -456,18 +461,22 @@
         this.taskResultSearchData = search
         const keys = Object.keys(search)
         if (keys.length === 0) {
-          this.taskResultSearchData = 0
-          this.getTaskResultData({page: this.currentTaskResultPage - 1, count: this.countPerPage})
+          this.taskResultSearchState = 0
+          let getApkMessageDataCondition = []
+          if (this.hasClickUp) {
+            getApkMessageDataCondition = this.hasClickUpConditions
+          }
+          this.getHasClickUpData(getApkMessageDataCondition)
           return
         }
         this.currentTaskResultPage = 1
         this.taskResultConditions = []
         setQueryConditions(keys, search, this.taskResultConditions)
-        this.getTaskResultData({
-          page: 0,
-          count: this.countPerPage,
-          conditions: this.taskResultConditions
-        })
+        let getApkMessageDataCondition = this.taskResultConditions
+        if (this.hasClickUp) {
+          getApkMessageDataCondition = this.hasClickUpConditions.concat(this.taskResultConditions)
+        }
+        this.getHasClickUpData(getApkMessageDataCondition)
         this.taskResultSearchState = 1
       },
       getApkMessageData({page, count, conditions = []}) {
@@ -492,6 +501,8 @@
         }
       },
       taskResultDataReload() {
+        this.hasClickUp = false
+        this.hasClickUpConditions = []
         if (this.taskResultSearchState === 0) {
           this.getTaskResultData({
             page: this.currentTaskResultPage - 1,
@@ -502,28 +513,36 @@
         }
       },
       onAppMessageClick(currentRow) {
-        const that = this;
-        that.isTaskResultLoading = true
+        this.isTaskResultLoading = true
         if (currentRow.id === '' || currentRow.id === 0) {
-          that.taskResultData = []
-          that.isTaskResultLoading = false
+          this.taskResultData = []
+          this.isTaskResultLoading = false
           return
         }
         this.currentTaskResultPage = 1
+        this.hasClickUp = true
+        this.hasClickUpConditions = [{
+          "query": "app_id",
+          "queryString": currentRow.id
+        }, {
+          "query": "app_shop_id",
+          "queryString": currentRow.appShopId
+        }]
+        this.getHasClickUpData(this.hasClickUpConditions)
+      },
+      getHasClickUpData(conditions) {
         getTaskResults({
           "page": 0,
           "count": this.countPerPage,
-          "conditions": [{
-            "query": "app_id",
-            "queryString": currentRow.id
-          }, {
-            "query": "app_shop_id",
-            "queryString": currentRow.appShopId
-          }]
+          "conditions": conditions
         }).then(res => {
-          that.taskResultDataCount = res.data.data.size
-          that.taskResultData = res.data.data.data
-          that.isTaskResultLoading = false
+          this.taskResultDataCount = res.data.data.size
+          this.taskResultData = res.data.data.data
+          this.isTaskResultLoading = false
+        }).catch(() => {
+          this.isTaskResultLoading = false
+          this.hasClickUp = false
+          this.hasClickUpConditions = []
         })
       },
       onApkMessageDoubleClick(currentRow) {

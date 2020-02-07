@@ -120,6 +120,26 @@ export default [
     ]
   },
   {
+    path: '/violationConfig',
+    name: 'violationConfig',
+    meta: {
+      icon: 'ios-color-filter-outline',
+      title: '质检规则管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'violation-config-admin',
+        name: 'violation-config-admin',
+        meta: {
+          icon: 'ios-color-filter-outline',
+          title: '质检规则管理'
+        },
+        component: () => import('@/view/violationConfig/violation-config-admin.vue')
+      }
+    ]
+  },
+  {
     path: '/user',
     name: 'user',
     meta: {

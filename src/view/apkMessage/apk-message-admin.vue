@@ -47,7 +47,6 @@
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
   import {setQueryConditions, downloadByBlob} from '../../libs/util.js'
   import {getAllApplicationShop} from "../../api/applicationShop";
-  import {createOrUpdateCycleJob} from "../../api/task";
 
   export default {
     components: {
@@ -67,7 +66,7 @@
         isApkLoading: false,
         appPathDataCount: 0,
         apkDataCount: 0,
-        countPerPage: 5,
+        countPerPage: 3,
         appPathData: [],
         appPathColumns: [
           {
@@ -90,12 +89,9 @@
           {
             title: '创建者',
             width: 75,
-            render: (h, params) => {
-              let createUser = params.row.createUserId
-              if (params.row.createUserId === 0) {
-                createUser = '系统'
-              }
-              return h('p', createUser)
+            key: 'createUserName',
+            filter: {
+              type: 'Input'
             }
           },
           {
@@ -475,7 +471,9 @@
         apkConditions: [],
         appPathConditions: [],
         applicationShopData: [],
-        appData: []
+        appData: [],
+        hasClickUp: false,
+        hasClickUpConditions: []
       }
     },
     mounted() {
@@ -504,10 +502,16 @@
     },
     watch: {
       currentAppPathPage() {
-        this.getAppPathData({
-          page: this.currentAppPathPage - 1,
-          count: this.countPerPage
-        })
+        if (this.hasClickUp) {
+          this.isAppPathLoading = true
+          let getHashClickUpDataCondition = this.hasClickUpConditions.concat(this.appPathConditions)
+          this.getHasClickUpData(getHashClickUpDataCondition)
+        } else {
+          this.getAppPathData({
+            page: this.currentAppPathPage - 1,
+            count: this.countPerPage
+          })
+        }
       },
       currentApkPage() {
         this.getApkMessageData({
@@ -590,16 +594,28 @@
         const keys = Object.keys(search)
         if (keys.length === 0) {
           this.appPathSearchState = 0
-          this.getAppPathData({page: this.currentAppPathPage - 1, count: this.countPerPage})
+          let getApkMessageDataCondition = []
+          if (this.hasClickUp) {
+            getApkMessageDataCondition = this.hasClickUpConditions
+          }
+          this.getAppPathData({
+            page: this.currentAppPathPage - 1,
+            count: this.countPerPage,
+            conditions: getApkMessageDataCondition
+          })
           return
         }
         this.currentAppPathPage = 1
         this.appPathConditions = []
         setQueryConditions(keys, search, this.appPathConditions)
+        let getApkMessageDataCondition = this.appPathConditions
+        if (this.hasClickUp) {
+          getApkMessageDataCondition = this.hasClickUpConditions.concat(this.appPathConditions)
+        }
         this.getAppPathData({
           page: 0,
           count: this.countPerPage,
-          conditions: this.appPathConditions
+          conditions: getApkMessageDataCondition
         })
         this.appPathSearchState = 1
       },
@@ -625,6 +641,8 @@
         }
       },
       appPathDataReload() {
+        this.hasClickUp = false
+        this.hasClickUpConditions = []
         if (this.appPathSearchState === 0) {
           this.getAppPathData({
             page: this.currentAppPathPage - 1,
@@ -635,25 +653,36 @@
         }
       },
       onAppMessageClick(currentRow) {
-        const that = this;
-        that.isAppPathLoading = true
         if (currentRow.id === '' || currentRow.id === 0) {
-          that.appPathData = []
-          that.isAppPathLoading = false
+          this.appPathData = []
+          this.isAppPathLoading = false
           return
         }
+        this.isAppPathLoading = true
+        this.hasClickUp = true
+        this.appPathSearchState = false
+        this.appPathSearchData = {}
+        this.appPathConditions = []
         this.currentAppPathPage = 1
+        this.hasClickUpConditions = [{
+          "query": "app_id",
+          "queryString": currentRow.id
+        }]
+        this.getHasClickUpData(this.hasClickUpConditions)
+      },
+      getHasClickUpData(conditions) {
         getAppPaths({
           "page": 0,
           "count": this.countPerPage,
-          "conditions": [{
-            "query": "app_id",
-            "queryString": currentRow.id
-          }]
+          "conditions": conditions
         }).then(res => {
-          that.appPathDataCount = res.data.data.size
-          that.appPathData = res.data.data.data
-          that.isAppPathLoading = false
+          this.appPathDataCount = res.data.data.size
+          this.appPathData = res.data.data.data
+          this.isAppPathLoading = false
+        }).catch(() => {
+          this.hasClickUp = false
+          this.isAppPathLoading = false
+          this.hasClickUpConditions = []
         })
       },
       createOrUpdateAppPath(currentRow) {
@@ -676,7 +705,7 @@
           this.currentAppPathData.id = 0
         }
         this.$Modal.confirm({
-          title: '设置APP路径',
+          title: '新建App遍历路径',
           render: (h, params) => {
             return h('span', [
               h('p', '应用商店:'),

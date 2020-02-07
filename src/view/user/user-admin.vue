@@ -57,7 +57,10 @@
           },
           {
             title: '创建者',
-            key: "createUserName"
+            key: "createUserName",
+            filter: {
+              type: 'Input'
+            }
           },
           {
             title: '部门',

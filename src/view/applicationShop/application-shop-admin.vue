@@ -43,11 +43,9 @@
 <script>
   import apkExpand from '../../components/table/apk-expand.vue'
   import super_table from '../../components/table/supertable.vue'
-  import {getAllApplicationShop, deleteApplicationShop} from '../../api/applicationShop'
-  import {getAllApkMessage, deleteApkMessage} from '../../api/apkMessage'
-  import {setQueryConditions, downloadByBlob} from '../../libs/util.js'
-  import {createOrUpdateApplicationShop} from "../../api/applicationShop";
-  import {createOrUpdateApkMessage} from "../../api/apkMessage";
+  import {createOrUpdateApplicationShop, deleteApplicationShop, getAllApplicationShop} from '../../api/applicationShop'
+  import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
+  import {downloadByBlob, setQueryConditions} from '../../libs/util.js'
 
   export default {
     components: {
@@ -328,6 +326,8 @@
         applicationShopConditions: [],
         currentApplicationShopData: {},
         currentApkMessageData: {},
+        hasClickUp: false,
+        hasClickUpConditions: []
       }
     },
     mounted() {
@@ -360,11 +360,17 @@
         })
       },
       currentApkPage() {
-        this.getApkMessageData({
-          page: this.currentApkPage - 1,
-          count: this.countPerPage,
-          conditions: this.apkConditions
-        })
+        if (this.hasClickUp) {
+          this.isApkLoading = true
+          let getHashClickUpDataCondition = this.hasClickUpConditions.concat(this.apkConditions)
+          this.getHasClickUpData(getHashClickUpDataCondition)
+        } else {
+          this.getApkMessageData({
+            page: this.currentApkPage - 1,
+            count: this.countPerPage,
+            conditions: this.apkConditions
+          })
+        }
       }
     },
     computed: {},
@@ -441,16 +447,28 @@
         const keys = Object.keys(search)
         if (keys.length === 0) {
           this.apkSearchState = 0
-          this.getApkMessageData({page: this.currentApkPage - 1, count: this.countPerPage})
+          let getApkMessageDataCondition = []
+          if (this.hasClickUp) {
+            getApkMessageDataCondition = this.hasClickUpConditions
+          }
+          this.getApkMessageData({
+            page: this.currentApkPage - 1,
+            count: this.countPerPage,
+            conditions: getApkMessageDataCondition
+          })
           return
         }
         this.currentApkPage = 1
         this.apkConditions = []
         setQueryConditions(keys, search, this.apkConditions)
+        let getApkMessageDataCondition = this.apkConditions
+        if (this.hasClickUp) {
+          getApkMessageDataCondition = this.hasClickUpConditions.concat(this.apkConditions)
+        }
         this.getApkMessageData({
           page: 0,
           count: this.countPerPage,
-          conditions: this.apkConditions
+          conditions: getApkMessageDataCondition
         })
         this.apkSearchState = 1
       },
@@ -466,9 +484,12 @@
         })
       },
       apkDataReload() {
+        this.hasClickUp = false
+        this.hasClickUpConditions = []
+        this.currentApkPage = 1
         if (this.apkSearchState === 0) {
           this.getApkMessageData({
-            page: this.currentApplicationShopPage - 1,
+            page: 0,
             count: this.countPerPage
           })
         } else {
@@ -486,26 +507,34 @@
         }
       },
       onApplicationShopClick(currentRow) {
-        var that = this
-        that.isApkLoading = true
         if (currentRow.id === '' || currentRow.id === 0) {
-          that.apkData = []
-          that.isApkLoading = false
           return
         }
+        this.hasClickUp = true
+        this.isApkLoading = true
         this.currentApkPage = 1
+        this.apkSearchData = {}
+        this.apkSearchState = false
+        this.apkConditions = []
+        this.hasClickUpConditions = [{
+          "query": "app_shop_id",
+          "queryString": currentRow.id
+        }]
+        this.getHasClickUpData(this.hasClickUpConditions)
+      },
+      getHasClickUpData(conditions) {
         getAllApkMessage({
-          "page": 0,
+          "page": this.currentApkPage - 1,
           "count": this.countPerPage,
-          "conditions": [{
-            "query": "app_shop_id",
-            "queryString": currentRow.id
-          }]
+          "conditions": conditions
         }).then(res => {
-          that.apkDataCount = res.data.data.size
-          const data = res.data.data.data
-          that.apkData = data
-          that.isApkLoading = false
+          this.apkDataCount = res.data.data.size
+          this.apkData = res.data.data.data
+          this.isApkLoading = false
+        }).catch(() => {
+          this.hasClickUp = false
+          this.isApkLoading = false
+          this.hasClickUpConditions = []
         })
       },
       onApplicationShopDoubleClick(currentRow) {

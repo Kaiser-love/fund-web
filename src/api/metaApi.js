@@ -12,4 +12,10 @@ export const getOcrTypes = () => {
     method: 'get'
   })
 }
+export const getEnumTypes = (type) => {
+  return axios.request({
+    url: '/fundApi/v1/meta/enumTypes/' + type,
+    method: 'get'
+  })
+}
 

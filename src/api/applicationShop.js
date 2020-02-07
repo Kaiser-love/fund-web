@@ -1,6 +1,6 @@
 import axios from '@/libs/api.request'
 
-export const getAllApplicationShop = ({page = 0, count = 9999, conditions = [], conditionConnection = "and"}) => {
+export const getAllApplicationShop = ({page = 0, count = 9999, conditions = [], conditionConnection = null}) => {
   return axios.request({
     url: '/fundApi/v1/applicationShop/list',
     method: 'post',
