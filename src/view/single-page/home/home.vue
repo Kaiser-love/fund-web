@@ -186,7 +186,7 @@
         this.cycleJobData[1].value = res.data.data.forbidCycleJobSize
         this.cycleJobData[2].value = res.data.data.runningCycleJobSize
         this.cycleJobData[3].value = res.data.data.stopCycleJobSize
-        
+
         this.violationItemPieData[0].value = res.data.data.deadlyViolationItemSize
         this.violationItemPieData[1].value = res.data.data.secondViolationItemSize
         this.violationItemPieData[2].value = res.data.data.ordinaryViolationItemSize

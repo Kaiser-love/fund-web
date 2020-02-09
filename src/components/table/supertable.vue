@@ -1,9 +1,9 @@
 <template>
   <div>
-    <Table size="small" border :data="filters" :columns="tableColumnsFilters" stripe ></Table>
+    <Table size="small" border :data="filters" :columns="tableColumnsFilters" stripe></Table>
     <Table ref="st" size="small" highlight-row @on-row-click="handleClick" :row-class-name="customRowClassFunc"
            @on-row-dblclick="handleDoubleClick" @on-selection-change="handleSelection" border :data="data"
-           :columns="columns" :show-header="false" :loading="isLoading" ></Table>
+           :columns="columns" :show-header="false" :loading="isLoading"></Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
         <Page :total="dataNum" :page-size="pageSize" :current="current" @on-change="changePage"></Page>

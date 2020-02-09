@@ -140,11 +140,31 @@ export default [
     ]
   },
   {
+    path: '/appScore',
+    name: 'appScore',
+    meta: {
+      icon: 'ios-aperture',
+      title: '违规分析'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'app-score-admin',
+        name: 'app-score-admin',
+        meta: {
+          icon: 'ios-aperture',
+          title: '违规分析'
+        },
+        component: () => import('@/view/app-score/app-score-admin.vue')
+      }
+    ]
+  },
+  {
     path: '/user',
     name: 'user',
     meta: {
       icon: 'ios-man',
-      title: '用户'
+      title: '用户管理'
     },
     component: Main,
     children: [
@@ -164,7 +184,7 @@ export default [
     name: 'ocr',
     meta: {
       icon: 'md-qr-scanner',
-      title: '应用商店'
+      title: 'OCR测试'
     },
     component: Main,
     children: [

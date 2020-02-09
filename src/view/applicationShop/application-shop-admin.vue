@@ -46,6 +46,7 @@
   import {createOrUpdateApplicationShop, deleteApplicationShop, getAllApplicationShop} from '../../api/applicationShop'
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
   import {downloadByBlob, setQueryConditions} from '../../libs/util.js'
+  import {getEnumTypes} from "../../api/metaApi";
 
   export default {
     components: {
@@ -54,6 +55,7 @@
     },
     data() {
       return {
+        ocrTypeList: [],
         applicationShopSearchState: 0,
         applicationShopSearchData: {},
         apkSearchState: 0,
@@ -234,6 +236,13 @@
             }
           },
           {
+            title: 'ocr检测方式',
+            key: 'ocrTypeDesc',
+            filter: {
+              type: 'Input'
+            }
+          },
+          {
             title: 'appActivity',
             key: 'appActivity'
           },
@@ -349,6 +358,9 @@
       this.getApplicationShopData({
         page: this.currentApplicationShopPage - 1,
         count: this.countPerPage
+      })
+      getEnumTypes('ocrType').then(res => {
+        this.ocrTypeList = res.data.data
       })
     },
     watch: {
@@ -596,6 +608,27 @@
           title: '修改基金Apk信息',
           render: (h, params) => {
             return h('span', [
+              h('p', 'OCR检测方式:'),
+              h('Select', {
+                  props: {
+                    size: "large",
+                    value: this.currentApkMessageData.ocrType
+                  },
+                  on: {
+                    'on-change': (val) => {
+                      this.currentApkMessageData.ocrType = val
+                    }
+                  }
+                },
+                that.ocrTypeList.map((item) => {
+                  return h('Option', {
+                    props: {
+                      value: item.code,
+                      label: item.desc
+                    }
+                  })
+                })
+              ),
               h('p', 'Apk保存路径:'),
               h('Input', {
                 props: {

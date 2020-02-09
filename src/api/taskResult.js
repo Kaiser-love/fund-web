@@ -20,3 +20,11 @@ export const deleteTaskResult = (id) => {
     method: 'delete'
   })
 }
+
+export const createOrUpdateTaskResult = (data) => {
+  return axios.request({
+    url: '/fundApi/v1/taskResult/createOrUpdate',
+    method: 'post',
+    data: data
+  })
+}

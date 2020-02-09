@@ -47,6 +47,7 @@
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
   import {setQueryConditions, downloadByBlob} from '../../libs/util.js'
   import {getAllApplicationShop} from "../../api/applicationShop";
+  import {getEnumTypes} from "../../api/metaApi";
 
   export default {
     components: {
@@ -55,6 +56,20 @@
     },
     data() {
       return {
+        ocrTypeList: [
+          {
+            code: '0',
+            desc: '百度OCR识别'
+          },
+          {
+            code: '1',
+            desc: '基于端到端的OCR文字识别模型'
+          },
+          {
+            code: '2',
+            desc: 'tesseract开源识别库'
+          }
+        ],
         apkSearchState: 0,
         appPathSearchState: 0,
         apkSearchData: {},
@@ -66,7 +81,7 @@
         isApkLoading: false,
         appPathDataCount: 0,
         apkDataCount: 0,
-        countPerPage: 3,
+        countPerPage: 5,
         appPathData: [],
         appPathColumns: [
           {
@@ -217,7 +232,7 @@
                     createOrUpdateAppPath(params.row).then(res => {
                       params.row.state = res.data.data.state
                       this.$Message.success("修改成功")
-                    }).finally(this.stateDisable = false)
+                    }).finally(() => this.stateDisable = false)
                   }
                 }
               }, [
@@ -380,6 +395,13 @@
             }
           },
           {
+            title: 'ocr检测方式',
+            key: 'ocrTypeDesc',
+            filter: {
+              type: 'Input'
+            }
+          },
+          {
             title: 'appActivity',
             key: 'appActivity'
           },
@@ -498,6 +520,9 @@
       })
       getAllApplicationShop({page: 0, count: 100}).then(res => {
         this.applicationShopData = res.data.data.data
+      })
+      getEnumTypes('ocrType').then(res => {
+        this.ocrTypeList = res.data.data
       })
     },
     watch: {
@@ -811,6 +836,27 @@
           title: '修改基金Apk信息',
           render: (h, params) => {
             return h('span', [
+              h('p', 'OCR检测方式:'),
+              h('Select', {
+                  props: {
+                    size: "large",
+                    value: this.currentApkMessageData.ocrType
+                  },
+                  on: {
+                    'on-change': (val) => {
+                      this.currentApkMessageData.ocrType = val
+                    }
+                  }
+                },
+                that.ocrTypeList.map((item) => {
+                  return h('Option', {
+                    props: {
+                      value: item.code,
+                      label: item.desc
+                    }
+                  })
+                })
+              ),
               h('p', 'Apk保存路径:'),
               h('Input', {
                 props: {

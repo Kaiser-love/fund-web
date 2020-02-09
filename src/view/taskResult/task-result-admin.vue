@@ -41,9 +41,10 @@
 <script>
   import apkExpand from '../../components/table/apk-expand.vue'
   import super_table from '@/components/table/supertable.vue'
-  import {deleteTaskResult, getTaskResults} from '../../api/taskResult'
+  import {deleteTaskResult, getTaskResults, createOrUpdateTaskResult} from '../../api/taskResult'
   import {createOrUpdateApkMessage, deleteApkMessage, getAllApkMessage} from '../../api/apkMessage'
   import {setQueryConditions, downloadByBlob} from '../../libs/util.js'
+  import {getEnumTypes} from "../../api/metaApi";
 
   export default {
     components: {
@@ -53,6 +54,7 @@
     data() {
       return {
         apkSearchState: 0,
+        stateDisable: false,
         taskResultSearchState: 0,
         apkSearchData: {},
         taskResultSearchData: {},
@@ -124,6 +126,45 @@
           {
             title: '最近更新时间',
             key: 'updateTime',
+          },
+          {
+            title: '是否误检',
+            key: 'state',
+            filter: {
+              type: 'Input'
+            },
+            width: '120',
+            render: (h, params) => {
+              const row = params.row
+              return h('i-switch', {
+                props: {
+                  value: row.state === 1,
+                  size: 'large',
+                  disabled: this.stateDisable
+                },
+                on: {
+                  'on-change': (val) => {
+                    this.stateDisable = true
+                    if (val) {
+                      params.row.state = 1
+                    } else {
+                      params.row.state = 0
+                    }
+                    createOrUpdateTaskResult(params.row).then(res => {
+                      params.row.state = res.data.data.state
+                      this.$Message.success("修改成功")
+                    }).finally(() => this.stateDisable = false)
+                  }
+                }
+              }, [
+                h('span', {
+                  slot: 'open'
+                }, '正常'),
+                h('span', {
+                  slot: 'close'
+                }, '误检')
+              ])
+            }
           },
           {
             title: '操作',
@@ -253,6 +294,13 @@
             }
           },
           {
+            title: 'ocr检测方式',
+            key: 'ocrTypeDesc',
+            filter: {
+              type: 'Input'
+            }
+          },
+          {
             title: 'appActivity',
             key: 'appActivity'
           },
@@ -344,7 +392,8 @@
         apkConditions: [],
         taskResultConditions: [],
         hasClickUp: false,
-        hasClickUpConditions: []
+        hasClickUpConditions: [],
+        ocrTypeList: []
       }
     },
     mounted() {
@@ -366,6 +415,9 @@
       this.getTaskResultData({
         page: this.currentTaskResultPage - 1,
         count: this.countPerPage
+      })
+      getEnumTypes('ocrType').then(res => {
+        this.ocrTypeList = res.data.data
       })
     },
     watch: {
@@ -552,6 +604,27 @@
           title: '修改基金Apk信息',
           render: (h, params) => {
             return h('span', [
+              h('p', 'OCR检测方式:'),
+              h('Select', {
+                  props: {
+                    size: "large",
+                    value: this.currentApkMessageData.ocrType
+                  },
+                  on: {
+                    'on-change': (val) => {
+                      this.currentApkMessageData.ocrType = val
+                    }
+                  }
+                },
+                that.ocrTypeList.map((item) => {
+                  return h('Option', {
+                    props: {
+                      value: item.code,
+                      label: item.desc
+                    }
+                  })
+                })
+              ),
               h('p', 'Apk保存路径:'),
               h('Input', {
                 props: {

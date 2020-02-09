@@ -100,20 +100,6 @@
         judgeTypeMode: -1,
         ruleDesc: '',
         keywordExpr: '',
-        ocrTypeList: [
-          {
-            code: '0',
-            desc: '百度OCR识别'
-          },
-          {
-            code: '1',
-            desc: '基于端到端的OCR文字识别模型'
-          },
-          {
-            code: '2',
-            desc: 'tesseract开源识别库'
-          }
-        ],
         andTypeList: [{
           code: '0',
           desc: '同时成立'
@@ -322,13 +308,6 @@
             }
           },
           {
-            title: 'ocr检测方式',
-            key: 'ocrTypeDesc',
-            filter: {
-              type: 'Input'
-            }
-          },
-          {
             title: '违规类型',
             key: 'ruleTypeDesc',
             filter: {
@@ -492,9 +471,6 @@
       })
       getAllApplicationShop({page: 0, count: 100}).then(res => {
         this.applicationShopData = res.data.data.data
-      })
-      getEnumTypes('ocrType').then(res => {
-        this.ocrTypeList = res.data.data
       })
       getEnumTypes('andType').then(res => {
         this.andTypeList = res.data.data
@@ -833,27 +809,6 @@
                     props: {
                       value: item.id,
                       label: item.apkName
-                    }
-                  })
-                })
-              ),
-              h('p', 'OCR检测方式:'),
-              h('Select', {
-                  props: {
-                    size: "large",
-                    value: this.currentViolationItemData.ocrType
-                  },
-                  on: {
-                    'on-change': (val) => {
-                      this.currentViolationItemData.ocrType = val
-                    }
-                  }
-                },
-                that.ocrTypeList.map((item) => {
-                  return h('Option', {
-                    props: {
-                      value: item.code,
-                      label: item.desc
                     }
                   })
                 })
