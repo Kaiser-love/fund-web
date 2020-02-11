@@ -46,7 +46,7 @@ export const hasOneOf = (targetarr, arr) => {
  * @param {String|Number} value 要验证的字符串或数值
  * @param {*} validList 用来验证的列表
  */
-export function oneOf (value, validList) {
+export function oneOf(value, validList) {
   for (let i = 0; i < validList.length; i++) {
     if (value === validList[i]) {
       return true
@@ -212,4 +212,24 @@ export const objEqual = (obj1, obj2) => {
   else if (keysArr1.length === 0 && keysArr2.length === 0) return true
   /* eslint-disable-next-line */
   else return !keysArr1.some(key => obj1[key] != obj2[key])
+}
+Date.prototype.format = function (fmt) {
+  var o = {
+    "M+": this.getMonth() + 1,                 //月份
+    "d+": this.getDate(),                    //日
+    "h+": this.getHours(),                   //小时
+    "m+": this.getMinutes(),                 //分
+    "s+": this.getSeconds(),                 //秒
+    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+    "S": this.getMilliseconds()             //毫秒
+  };
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+  }
+  for (var k in o) {
+    if (new RegExp("(" + k + ")").test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    }
+  }
+  return fmt;
 }

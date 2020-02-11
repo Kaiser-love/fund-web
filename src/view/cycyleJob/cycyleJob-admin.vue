@@ -54,12 +54,6 @@
 </template>
 <script>
   import {
-    updateCycleJob,
-    scanShoptag,
-    flushShoptag,
-    getCalShoptag
-  } from '../../api/cycylejob'
-  import {
     createOrUpdateCycleJob,
     deleteCycleJob,
     getCycleJobs,

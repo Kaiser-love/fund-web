@@ -85,8 +85,7 @@
     getViolationRulesByItemId
   } from '../../api/violationRule'
   import {setQueryConditions} from '../../libs/util.js'
-  import {createOrUpdateApkMessage, getAllApkMessage} from "../../api/apkMessage";
-  import {createOrUpdateAppPath} from "../../api/appPath";
+  import {getAllApkMessage} from "../../api/apkMessage";
   import {getAllApplicationShop} from "../../api/applicationShop";
   import {getEnumTypes} from "../../api/metaApi";
 
