@@ -1,7 +1,7 @@
 <template>
   <div>
     <Row :gutter="20">
-      <i-col :xs="12" :md="8" :lg="4" v-for="(infor, i) in inforCardData" :key="`infor-${i}`"
+      <i-col :xs="12" :md="8" :lg="4" v-for="(infor, i) in infoCardData" :key="`infor-${i}`"
              style="height: 120px;padding-bottom: 10px;">
         <infor-card shadow :color="infor.color" :icon="infor.icon" :icon-size="36">
           <count-to :end="infor.count" count-class="count-style"/>
@@ -127,7 +127,7 @@
           }
         ],
         isShow: false,
-        inforCardData: [
+        infoCardData: [
           {title: '应用商店数量', icon: 'md-person-add', count: 803, color: '#2d8cf0'},
           {title: '基金APP数量', icon: 'md-locate', count: 232, color: '#19be6b'},
           {title: '定时任务数量', icon: 'md-help-circle', count: 142, color: '#ff9900'},
@@ -137,6 +137,8 @@
           {title: '违规项数量', icon: 'ios-clipboard-outline', count: 14, color: '#ED55E4'},
           {title: '质检规则数量', icon: 'ios-cog', count: 14, color: '#E61A1A'},
           {title: '质检结果数量', icon: 'logo-buffer', count: 14, color: '#3A66F4'},
+          {title: 'OCR方式', icon: 'md-basketball', count: 3, color: '#33CCAE'},
+          {title: '规则匹配方式', icon: 'ios-boat', count: 5, color: '#B822DD'},
         ],
         cycleJobData: [
           {value: 1, name: '启用'},
@@ -157,15 +159,17 @@
         url: '/fundApi/v1/common/index',
         methods: 'get'
       }).then(res => {
-        this.inforCardData[0].count = res.data.data.applicationShopSize
-        this.inforCardData[1].count = res.data.data.apkSize
-        this.inforCardData[2].count = res.data.data.cycleJobSize
-        this.inforCardData[3].count = res.data.data.userSize
-        this.inforCardData[4].count = res.data.data.appPathSize
-        this.inforCardData[5].count = res.data.data.logSize
-        this.inforCardData[6].count = res.data.data.violationItemSize
-        this.inforCardData[7].count = res.data.data.violationRuleSize
-        this.inforCardData[8].count = res.data.data.taskResultSize
+        this.infoCardData[0].count = res.data.data.applicationShopSize
+        this.infoCardData[1].count = res.data.data.apkSize
+        this.infoCardData[2].count = res.data.data.cycleJobSize
+        this.infoCardData[3].count = res.data.data.userSize
+        this.infoCardData[4].count = res.data.data.appPathSize
+        this.infoCardData[5].count = res.data.data.logSize
+        this.infoCardData[6].count = res.data.data.violationItemSize
+        this.infoCardData[7].count = res.data.data.violationRuleSize
+        this.infoCardData[8].count = res.data.data.taskResultSize
+        this.infoCardData[9].count = res.data.data.ocrTypeSize
+        this.infoCardData[10].count = res.data.data.judgeTypeSize
 
         this.chartData.rows[0]['数量'] = res.data.data.applicationShopSize
         this.chartData.rows[1]['数量'] = res.data.data.apkSize
