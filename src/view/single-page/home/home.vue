@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div ref="container">
     <Row :gutter="20">
       <i-col :xs="12" :md="8" :lg="4" v-for="(infor, i) in infoCardData" :key="`infor-${i}`"
              style="height: 120px;padding-bottom: 10px;">
@@ -8,6 +8,10 @@
           <p>{{ infor.title }}</p>
         </infor-card>
       </i-col>
+    </Row>
+    <Row :gutter="20" style="margin-top: 10px;">
+      <el-col id="myChart" style="width:1650px;height:400px">
+      </el-col>
     </Row>
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
@@ -54,6 +58,9 @@
   import super_table from '@/components/table/supertable.vue'
   import {getAllLog} from '../../../api/log'
   import "echarts/lib/component/title";
+  import "echarts-wordcloud/dist/echarts-wordcloud";
+  import "echarts-wordcloud/dist/echarts-wordcloud.min";
+  import echarts from "echarts";
 
   export default {
     name: 'home',
@@ -65,6 +72,76 @@
     },
     data() {
       return {
+        technologyStack: [
+          {
+            name: "SpringCloud",
+            value: 15000
+          },
+          {
+            name: "SpringBoot",
+            value: 10081
+          },
+          {
+            name: "SpringGateWay",
+            value: 9386
+          },
+          {
+            name: "Nacos",
+            value: 7500
+          },
+          {
+            name: "SpringAdmin",
+            value: 7500
+          },
+          {
+            name: "MybatsiPlus",
+            value: 7500
+          },
+          {
+            name: "Vue",
+            value: 7500
+          },
+          {
+            name: "OCR",
+            value: 7500
+          },
+          {
+            name: "NLP",
+            value: 7500
+          },
+          {
+            name: "Appium",
+            value: 7500
+          },
+          {
+            name: "PaddleHub",
+            value: 7500
+          },
+          {
+            name: "CTPN",
+            value: 7500
+          },
+          {
+            name: "MongoDb",
+            value: 7500
+          },
+          {
+            name: "Mysql",
+            value: 7500
+          },
+          {
+            name: "XXL-JOB",
+            value: 7500
+          },
+          {
+            name: "Flask",
+            value: 7500
+          },
+          {
+            name: "Jsoup",
+            value: 7500
+          },
+        ],
         isTableLoading: false,
         countPerPage: 10,
         currentPage: 1,
@@ -150,7 +227,7 @@
           {value: 10, name: '重大违规'},
           {value: 10, name: '次要违规'},
           {value: 10, name: '普通违规'},
-        ]
+        ],
       }
     },
     created() {
@@ -197,6 +274,9 @@
         this.isShow = true
       })
     },
+    mounted() {
+      this.initChart()
+    },
     watch: {
       currentPage() {
         this.getLogTableData({page: this.currentPage - 1, count: this.countPerPage})
@@ -211,9 +291,66 @@
           that.logData = res.data.data.data
           that.isTableLoading = false
         })
+      },
+      initChart() {
+        this.chart = echarts.init(document.getElementById("myChart"));
+        const option = {
+          title: {
+            text: "技术栈",
+            x: "center"
+          },
+          backgroundColor: "#fff",
+          // tooltip: {
+          //   pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>"
+          // },
+          series: [
+            {
+              type: "wordCloud",
+              //用来调整词之间的距离
+              gridSize: 60,
+              //用来调整字的大小范围
+              // Text size range which the value in data will be mapped to.
+              // Default to have minimum 12px and maximum 60px size.
+              sizeRange: [30, 80],
+              // Text rotation range and step in degree. Text will be rotated randomly in range [-90,                                                                             90] by rotationStep 45
+              //用来调整词的旋转方向，，[0,0]--代表着没有角度，也就是词为水平方向，需要设置角度参考注释内容
+              // rotationRange: [-45, 0, 45, 90],
+              // rotationRange: [ 0,90],
+              rotationRange: [0, 0],
+              //随机生成字体颜色
+              // maskImage: maskImage,
+              textStyle: {
+                normal: {
+                  color: function () {
+                    return (
+                      "rgb(" +
+                      Math.round(Math.random() * 255) +
+                      ", " +
+                      Math.round(Math.random() * 255) +
+                      ", " +
+                      Math.round(Math.random() * 255) +
+                      ")"
+                    );
+                  }
+                }
+              },
+              //位置相关设置
+              // Folllowing left/top/width/height/right/bottom are used for positioning the word cloud
+              // Default to be put in the center and has 75% x 80% size.
+              left: "center",
+              top: "center",
+              right: null,
+              bottom: null,
+              width: "200%",
+              height: "200%",
+              //数据
+              data: this.technologyStack
+            }
+          ]
+        };
+        this.chart.setOption(option);
       }
     }
-
   }
 </script>
 

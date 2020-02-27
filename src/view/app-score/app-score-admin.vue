@@ -167,7 +167,7 @@
   import echarts from 'echarts'
   import {getAllApplicationShop} from "../../api/applicationShop";
   import {getAllApkMessage} from "../../api/apkMessage";
-  import {createOrUpdateTaskResult, getTaskResults} from "../../api/taskResult";
+  import {createOrUpdateTaskResult, deleteTaskResult, getTaskResults} from "../../api/taskResult";
   import {setQueryConditions} from "../../libs/util";
   import {getAllViolateRuleConfigs, createOrUpdateViolateRuleConfigs} from "../../api/violateRuleConfig";
   import {
@@ -735,7 +735,24 @@
       flushDate() {
         this.calculateViolationScore(this.isApp ? 0 : 1, this.currentIndex === -1 || this.currentIndex === -2 ? [] : [this.currentIndex])
         this.calculateViolateScoreTendency(this.isApp ? 0 : 1, this.currentIndex === -1 || this.currentIndex === -2 ? [] : [this.currentIndex])
-      }
+      },
+      removeTaskResult(id) {
+        var that = this
+        let dId = id
+        this.$Modal.confirm({
+          title: '警告',
+          content: '该操作会导致该质检结果永远从数据库移除，确定删除该质检结果吗？（非专业人员和维护人员请勿执行此操作）',
+          onOk: function () {
+            deleteTaskResult(dId).then(res => {
+              this.$message.success("删除成功")
+              that.getTaskResultData({
+                page: that.currentTaskResultPage - 1,
+                count: that.countPerPage
+              })
+            })
+          }
+        })
+      },
     },
   }
 </script>
