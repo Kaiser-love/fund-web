@@ -61,12 +61,10 @@
   import {
     getAllApplicationShop,
   } from '../../api/applicationShop'
-  import {scanAll} from '@/api/tag'
   import super_table from '../../components/table/supertable.vue'
   import cronSelector from '@/components/corn-selector/corn-selector.vue'
   import {getTaskTypes} from '../../api/metaApi'
   import {setQueryConditions} from '../../libs/util.js'
-  import store from '../../store'
 
   export default {
     components: {

@@ -64,7 +64,7 @@ export default [
     name: 'apkMessage',
     meta: {
       icon: 'ios-appstore',
-      title: 'APP管理'
+      title: '基金APP'
     },
     component: Main,
     children: [
@@ -100,31 +100,11 @@ export default [
     ]
   },
   {
-    path: '/taskResult',
-    name: 'taskResult',
-    meta: {
-      icon: 'ios-clipboard',
-      title: '定期任务结果'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'taskResult_admin',
-        name: 'taskResult_admin',
-        meta: {
-          icon: 'ios-clipboard',
-          title: '质检结果管理'
-        },
-        component: () => import('@/view/taskResult/task-result-admin.vue')
-      }
-    ]
-  },
-  {
     path: '/violationConfig',
     name: 'violationConfig',
     meta: {
       icon: 'ios-color-filter-outline',
-      title: '质检规则管理'
+      title: '质检规则'
     },
     component: Main,
     children: [
@@ -136,6 +116,26 @@ export default [
           title: '质检规则管理'
         },
         component: () => import('@/view/violationConfig/violation-config-admin.vue')
+      }
+    ]
+  },
+  {
+    path: '/taskResult',
+    name: 'taskResult',
+    meta: {
+      icon: 'ios-clipboard',
+      title: '质检结果'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'taskResult_admin',
+        name: 'taskResult_admin',
+        meta: {
+          icon: 'ios-clipboard',
+          title: '质检结果管理'
+        },
+        component: () => import('@/view/taskResult/task-result-admin.vue')
       }
     ]
   },
@@ -156,6 +156,26 @@ export default [
           title: '违规分析'
         },
         component: () => import('@/view/app-score/app-score-admin.vue')
+      }
+    ]
+  },
+  {
+    path: '/model',
+    name: 'model',
+    meta: {
+      icon: 'ios-man',
+      title: '模型管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'model_admin',
+        name: 'model_admin',
+        meta: {
+          icon: 'ios-man',
+          title: '模型管理'
+        },
+        component: () => import('@/view/model/model-admin.vue')
       }
     ]
   },

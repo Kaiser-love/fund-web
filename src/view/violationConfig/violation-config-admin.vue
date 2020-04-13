@@ -49,12 +49,18 @@
               <Option v-for="(item) in judgeTypeList" :key="item.code" :value="item.code">{{item.desc}}</Option>
             </Select>
           </Col>
-          <Col style="float:left;margin-left: 80px">
+          <Col style="float:left;margin-left: 80px" v-show="judgeTypeMode!=6">
             <span style="margin-left:8px;">关键字或正则表达式：</span>
             <div style="display: inline-block;">
               <Input v-model="keywordExpr" placeholder="输入关键字或正则表达式" style="margin-left:8px;width: 200px">
               </Input>
             </div>
+          </Col>
+          <Col style="float:left;margin-left: 80px" v-show="judgeTypeMode===6">
+            <span>语义标签：</span>
+            <Select style="margin-left:8px;width: 200px" v-model="keywordExpr">
+              <Option v-for="(item) in modelList" :key="item.id" :value="item.id">{{item.modelName}}</Option>
+            </Select>
           </Col>
           <Col style="float:left;margin-left: 80px">
             <span style="margin-left:8px;">质检规则描述：</span>
@@ -84,6 +90,7 @@
     getAllViolationRule,
     getViolationRulesByItemId
   } from '../../api/violationRule'
+  import {getAllViolateModel} from '../../api/violateModel'
   import {setQueryConditions} from '../../libs/util.js'
   import {getAllApkMessage} from "../../api/apkMessage";
   import {getAllApplicationShop} from "../../api/applicationShop";
@@ -97,6 +104,7 @@
     data() {
       return {
         judgeTypeMode: -1,
+        modelName: '',
         ruleDesc: '',
         keywordExpr: '',
         andTypeList: [{
@@ -107,6 +115,7 @@
           desc: '部分成立'
         }],
         judgeTypeList: [],
+        modelList: [],
         ruleTypeList: [],
         violationRuleList: [],
         applicationShopData: [],
@@ -480,6 +489,10 @@
       getEnumTypes('ruleType').then(res => {
         this.ruleTypeList = res.data.data
       })
+      getAllViolateModel({}).then(res => {
+        this.modelList = res.data.data.data
+        console.log(this.modelList)
+      })
     },
     watch: {
       currentViolationRulePage() {
@@ -679,7 +692,7 @@
         )
       },
       createOrUpdateViolationItem(currentRow) {
-        var that = this
+        const that = this;
         // 更新操作
         if (currentRow.altKey === undefined) {
           this.currentViolationItemData = currentRow
@@ -698,7 +711,7 @@
           this.currentViolationItemData.id = 0
         }
         this.$Modal.confirm({
-          title: '新建违规项',
+          title: this.currentViolationItemData.id === 0 ? '新建违规项' : '更新违规项',
           width: '650',
           render: (h, params) => {
             return h('span', [
@@ -894,6 +907,7 @@
               h('p', '关键字或正则表达式:'),
               h('Input', {
                 props: {
+                  disabled: this.currentViolationRuleData.judgeType === 6,
                   placeholder: '输入关键字或正则表达式',
                   value: this.currentViolationRuleData.keyword,
                   size: "large",
