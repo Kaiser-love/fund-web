@@ -27,3 +27,13 @@ export const deleteCycleJob = (id) => {
     method: 'delete'
   })
 }
+export const executeOneCycleJob = (appId, cycleJobOneType) => {
+  return axios.request({
+    url: '/cycleJobApi/v1/cycleJob/execute',
+    method: 'get',
+    params: {
+      appId: appId,
+      cycleJobOneType: cycleJobOneType
+    }
+  })
+}

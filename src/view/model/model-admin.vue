@@ -13,27 +13,24 @@
         <span>{{ node.label }}</span>
         <span v-show="node.label!=='全部业务场景'">
           <el-button v-show="data.isModelCategory"
-                     style="background-color:#F5F7F9;"
                      type="text"
                      size="mini"
                      icon="el-icon-plus"
-                     default-expand-all
+                     default-expand-all circle
                      @click="() => createViolateModel(data)">
           </el-button>
           <el-button
-            style="background-color:#F5F7F9;"
             type="text"
             size="mini"
             icon="el-icon-edit-outline"
-            default-expand-all
+            default-expand-all circle
             @click="() => changeModelCategoryName(data)">
           </el-button>
           <el-button
-            style="background-color:#F5F7F9;"
             type="text"
             size="mini"
             icon="el-icon-close"
-            default-expand-all
+            default-expand-all circle
             @click="() => deleteModelCategoryName(data)">
           </el-button>
         </span>
@@ -423,7 +420,7 @@
         })
       },
       currentAnnotationDataPage() {
-        this.getTaskResultData({
+        this.getAnnotationData({
           page: this.currentAnnotationDataPage - 1,
           count: this.countPerPage
         })

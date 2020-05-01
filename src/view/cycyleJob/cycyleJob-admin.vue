@@ -6,6 +6,8 @@
         <Row justify="center" align="middle">
           <Col style="float:left"><p>定时任务信息</p></Col>
           <Col style="float:right;display: inline;">
+            <Button type="primary" @click="executeOneAppScreenCycleJob" style="margin-right: 10px">APP截图</Button>
+            <Button type="primary" @click="executeOneAppDetectCycleJob" style="margin-right: 10px">APP违规检测</Button>
             <Button type="primary" @click="cycleJobReload">刷新</Button>
           </Col>
         </Row>
@@ -57,10 +59,14 @@
     createOrUpdateCycleJob,
     deleteCycleJob,
     getCycleJobs,
+    executeOneCycleJob
   } from '../../api/task'
   import {
     getAllApplicationShop,
   } from '../../api/applicationShop'
+  import {
+    getAllApkMessage,
+  } from '../../api/apkMessage'
   import super_table from '../../components/table/supertable.vue'
   import cronSelector from '@/components/corn-selector/corn-selector.vue'
   import {getTaskTypes} from '../../api/metaApi'
@@ -239,7 +245,10 @@
         cycleJobSearchData: {},
         cycleJobSearchCondition: [],
         applicationShopData: [],
-        taskTypes: []
+        appData: [],
+        taskTypes: [],
+        executeAppShopId: 0,
+        executeAppId: 0
       }
     },
     created() {
@@ -252,7 +261,7 @@
       })
     },
     mounted() {
-      var that = this
+      const that = this;
       this.$nextTick(() => {
         this.windowWidth = this.$refs.container.offsetWidth
       })
@@ -330,7 +339,7 @@
         }
       },
       onTableClick(currentRow) {
-        var that = this
+        const that = this
         this.currentCycleJobData = currentRow
         this.$Modal.confirm({
           title: '设置定期任务',
@@ -431,6 +440,79 @@
       },
       onIsTaskShow(val) {
         this.isTaskCronModalShow = val
+      },
+      executeOneAppScreenCycleJob() {
+        this.callExecuteOneCycleJobApi(1)
+      },
+      executeOneAppDetectCycleJob() {
+        this.callExecuteOneCycleJobApi(2)
+      },
+      callExecuteOneCycleJobApi(type) {
+        const that = this
+        this.$Modal.confirm({
+          title: type === 1 ? '执行APP截图' : '执行APP违规检测',
+          render: (h, params) => {
+            return h('span', [
+              h('p', '应用商店:'),
+              h('Select', {
+                  props: {
+                    value: this.executeAppShopId
+                  },
+                  on: {
+                    'on-change': (val) => {
+                      this.executeAppShopId = val
+                      getAllApkMessage({
+                        page: 0,
+                        count: 9999,
+                        conditions: [{
+                          "query": "app_shop_id",
+                          "connection": "=",
+                          "queryString": this.executeAppShopId
+                        }]
+                      }).then(res => {
+                        that.appData = res.data.data.data
+                      })
+                    }
+                  }
+                },
+                that.applicationShopData.map((item) => {
+                  return h('Option', {
+                    props: {
+                      value: item.id,
+                      label: item.shopName
+                    }
+                  })
+                })
+              ),
+              h('p', '基金App:'),
+              h('Select', {
+                  props: {
+                    size: "large",
+                    value: this.executeAppId
+                  },
+                  on: {
+                    'on-change': (val) => {
+                      this.executeAppId = val
+                    }
+                  }
+                },
+                that.appData.map((item) => {
+                  return h('Option', {
+                    props: {
+                      value: item.id,
+                      label: item.apkName
+                    }
+                  })
+                })
+              ),
+            ])
+          },
+          onOk: () => {
+            executeOneCycleJob(this.executeAppId, type).then(res => {
+              console.log(res.data.data.data)
+            })
+          }
+        })
       }
     }
   }

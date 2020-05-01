@@ -26,4 +26,10 @@ export const createOrUpdateApkMessage = (data) => {
     data: data
   })
 }
+export const getAppMenu = () => {
+  return axios.request({
+    url: '/fundApi/v1/apkMessage/menu',
+    method: 'get'
+  })
+}
 

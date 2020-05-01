@@ -711,7 +711,7 @@
         })
       },
       createOrUpdateAppPath(currentRow) {
-        var that = this
+        const that = this;
         // 更新操作
         if (currentRow.altKey === undefined) {
           this.currentAppPathData = currentRow
@@ -825,12 +825,12 @@
       },
       editOK() {
         createOrUpdateAppPath(this.currentAppPathData).then(res => {
-          this.getAppPathData({page: this.currentAppPathPage - 1, count: this.countPerPage})
+          this.getHasClickUpData(this.hasClickUpConditions)
           this.$message.success("操作成功")
         })
       },
       onApkMessageDoubleClick(currentRow) {
-        var that = this
+        const that = this;
         this.currentApkMessageData = currentRow
         this.$Modal.confirm({
           title: '修改基金Apk信息',
