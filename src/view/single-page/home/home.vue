@@ -197,10 +197,7 @@
           },
           {
             title: '执行时间',
-            key: 'createTime',
-            render: (h, params) => {
-              return h('div', new Date(parseInt(params.row.createTime)).toLocaleString())
-            }
+            key: 'createTime'
           }
         ],
         isShow: false,

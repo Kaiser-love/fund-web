@@ -47,14 +47,6 @@ export const SMSlogin = (data) => {
   })
 }
 
-export const getVerCode = (data) => {
-  return axios.request({
-    url: '/api/smsVerify/sendIdentifyCode',
-    data: data,
-    method: 'post'
-  })
-}
-
 export const changePsw = (data) => {
   return axios.request({
     url: '/fundApi/v1/user/changeOwnPassword',
@@ -63,23 +55,6 @@ export const changePsw = (data) => {
   })
 }
 
-export const adminChangePsw = (data, newPsw) => {
-  return axios.request({
-    url: '/api/user/changePassword',
-    data: data,
-    params: {
-      新密码: newPsw
-    },
-    method: 'post'
-  })
-}
-
-export const switchUserUsable = (id) => {
-  return axios.request({
-    url: '/api/user/status/' + id,
-    method: 'put'
-  })
-}
 
 export const getUserInfo = (id) => {
   return axios.request({
@@ -89,87 +64,10 @@ export const getUserInfo = (id) => {
   })
 }
 
-export const deleteUser = (id) => {
-  return axios.request({
-    url: '/api/user/' + id,
-    method: 'delete'
-  })
-}
 
 export const getRoleInfo = (id) => {
   return axios.request({
     url: '/api/user/role/' + id,
-    method: 'get'
-  })
-}
-
-export const getAllUser = ({page, count, query, queryString}) => {
-  return axios.request({
-    url: '/api/users',
-    method: 'get',
-    params: {
-      query: query,
-      queryString: queryString,
-      page: page,
-      count: count
-    }
-  })
-}
-
-export const addUserRole = (uid, roleData) => {
-  return axios.request({
-    url: '/api/user/addRole',
-    method: 'post',
-    data: {
-      collectionIds: [roleData],
-      ids: [uid]
-    }
-  })
-}
-export const delUserRole = (uid, roleIds) => {
-  return axios.request({
-    url: '/api/user/delete/' + uid,
-    method: 'post',
-    data: roleIds
-  })
-}
-export const registryUser = (userInfo) => {
-  return axios.request({
-    url: '/api/user/registry',
-    method: 'post',
-    data: userInfo
-  })
-}
-
-export const updateUser = (userInfo) => {
-  return axios.request({
-    url: '/api/user',
-    method: 'post',
-    data: userInfo
-  })
-}
-
-export const updateRole = (roleid, userid) => {
-  return axios.request({
-    url: '/api/user/updateRole',
-    method: 'post',
-    params: {
-      roleId: roleid,
-      userId: userid
-    }
-  })
-}
-
-export const getUserMaxPer = (id) => {
-  return axios.request({
-    url: '/api/user/assgin/' + id,
-    method: 'get'
-  })
-}
-
-export const getCurUser = () => {
-  return axios.request({
-    url: '/api/user/currentUser',
     method: 'get'
   })
 }
