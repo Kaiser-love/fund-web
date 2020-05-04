@@ -292,7 +292,7 @@
         })
       },
       getCycleJobTableData({page, count, conditions = []}) {
-        var that = this
+        const that = this
         that.isTableLoading = true
         getCycleJobs({page: page, count: count, conditions: conditions}).then(res => {
           that.cycleJobData = res.data.data.data
@@ -301,7 +301,7 @@
         })
       },
       remove(id) {
-        var that = this
+        const that = this;
         this.$Modal.confirm({
           title: '警告',
           content: '确定删除该定期任务吗？',
@@ -316,9 +316,9 @@
       },
       onTableSearch(search) {
         this.cycleJobSearchData = search
-        var keys = Object.keys(search)
+        const keys = Object.keys(search)
         if (keys.length === 0) {
-          this.applicationShopSearchState = 0
+          this.cycleJobSearchState = 0
           this.getCycleJobTableData({page: 0, count: this.countPerPage})
           return
         }
@@ -326,12 +326,12 @@
         setQueryConditions(keys, search, this.cycleJobSearchCondition)
         this.currentPage = 1
         this.getCycleJobTableData({page: 0, count: this.countPerPage, conditions: this.cycleJobSearchCondition})
-        this.applicationShopSearchState = 1
+        this.cycleJobSearchState = 1
       },
       cycleJobReload() {
-        if (this.applicationShopSearchState === 0) {
+        if (this.cycleJobSearchState === 0) {
           this.getCycleJobTableData({
-            page: this.currentApplicationShopPage - 1,
+            page: this.currentPage - 1,
             count: this.countPerPage
           })
         } else {

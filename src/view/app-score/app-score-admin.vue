@@ -1,40 +1,38 @@
 <template>
   <div class="container" ref="container">
     <el-row type="flex">
-      <el-col :span="3" style="width: 27%;">
-        <div>
-          <input type="text" placeholder="请输入基金APP名" class="el-input__inner" v-model="searchValue"
-                 @keypress="dropDownSearch">
-          <el-scrollbar style="margin-top: 13px">
-            <el-menu background-color="#F5F7F9" @select="handleSelectApk" element-loading-text="拼命加载中"
-                     element-loading-spinner="el-icon-loading"
-                     element-loading-background="rgba(0, 0, 0, 0.8)"
-                     v-loading="fullscreenLoading"
-                     @close="handleCloseApplication"
-                     @open="handleSelectApplication"
-                     unique-opened class="project-dropdown">
-              <el-submenu index="-1">
-                <template slot="title"><i class="el-icon-monitor"></i>全部基金APP</template>
-                <el-submenu index="-2">
-                  <template slot="title"><i class="el-icon-monitor"></i>全部应用商店</template>
-                  <el-submenu v-for="applicationShop in applicationShopData" :index="applicationShop.id+''"
-                              :disabled="disabled" v-if="applicationShop.shopName !== '全部应用商店'">
-                    <template slot="title" >
-                      <i :class="applicationShop.menuIconClass"></i>
-                      {{applicationShop.shopName}}
-                    </template>
-                    <el-menu-item :index="apkMessage.id+''"
-                                  v-for="apkMessage in apkOpenDisplayData">
-                      {{apkMessage.apkName}}
-                    </el-menu-item>
-                  </el-submenu>
+      <el-col :span="3" style="width: 20%;">
+        <input type="text" placeholder="请输入基金APP名" class="el-input__inner" v-model="searchValue"
+               @keypress="dropDownSearch">
+        <el-scrollbar style="margin-top: 13px">
+          <el-menu background-color="#F5F7F9" @select="handleSelectApk" element-loading-text="拼命加载中"
+                   element-loading-spinner="el-icon-loading"
+                   element-loading-background="rgba(0, 0, 0, 0.8)"
+                   v-loading="fullscreenLoading"
+                   @close="handleCloseApplication"
+                   @open="handleSelectApplication"
+                   unique-opened class="project-dropdown">
+            <el-submenu index="-1">
+              <template slot="title"><i class="el-icon-monitor"></i>全部基金APP</template>
+              <el-submenu index="-2">
+                <template slot="title"><i class="el-icon-monitor"></i>全部应用商店</template>
+                <el-submenu v-for="applicationShop in applicationShopData" :index="applicationShop.id+''"
+                            :disabled="disabled" v-if="applicationShop.shopName !== '全部应用商店'">
+                  <template slot="title">
+                    <i :class="applicationShop.menuIconClass"></i>
+                    {{applicationShop.shopName}}
+                  </template>
+                  <el-menu-item :index="apkMessage.id+''"
+                                v-for="apkMessage in apkOpenDisplayData">
+                    {{apkMessage.apkName}}
+                  </el-menu-item>
                 </el-submenu>
               </el-submenu>
-            </el-menu>
-          </el-scrollbar>
-        </div>
+            </el-submenu>
+          </el-menu>
+        </el-scrollbar>
       </el-col>
-      <el-col :span="21" style="width: 73%;">
+      <el-col :span="21" style="width: 80%;">
         <el-row type="flex" class="row-bg">
           <el-col :span="24" type="flex">
             <el-row class="row-bg">

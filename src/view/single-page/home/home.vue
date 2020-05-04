@@ -196,7 +196,7 @@
             key: 'succeed'
           },
           {
-            title: '执行时间',
+            title: '访问时间',
             key: 'createTime'
           }
         ],
